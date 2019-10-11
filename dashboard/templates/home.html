@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}  <!-- to have the same style for the entire web it is better to have a layout and extend it to all pages -->
+{% block content %}
+    <h1  style="text-align: center"> Device List </h1>
+    <h2  style="text-align: center"><a class="article-title"  > All existing posts = {{ postnumber }}</a></h2></br>
+    {% for post in posts.items %}
+       <div  style=" flex-basis: auto;  display: flex;  flex: min-content; ">
+        <article   style="text-align: center" class="media content-section">
+          <img class="rounded-circle article-img" src="{{ url_for('static', filename='pictures/imac.jpg') }}">
+
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="{{ url_for ('device.detials', post_id = post.id)}}"> Crown ID : {{ post.crownID }}</a>
+            </div>
+            <h2><a class="article-title" href="{{ url_for ('device.detials', post_id = post.id)}}"> {{ post.name }} </a></h2>
+            <p><a class="article-title"> Mac Address: {{ post.macAddress }}</a></p>
+            <small class="text-muted"> Started at : {{ post.startDate.strftime('%Y-%m-%d') }}</small> </br>
+
+            <small class="text-muted"> Stoped at :{{ post.endDate.strftime('%Y-%m-%d') }}</small>
+
+          </div>
+        </article>
+      </div>
+
+    {% endfor %}
+    <!-- seperate the page and add the numbers and ... below to go to next pages -->
+    {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2)%}
+      {% if page_num %}
+        {% if posts.page == page_num %}
+          <a calss = "btn btn-info mb-4" href = "{{ url_for('main.home' , page=page_num)}}"> </a>
+        {% else %}
+        <a class="btn btn-outline-info mb-4" href="{{ url_for('main.home', page=page_num) }}">{{ page_num }}</a>
+      {% endif %}
+      {% else %}
+      ...
+      {% endif %}
+    {% endfor %}
+{% endblock content %}

@@ -1,0 +1,102 @@
+{% extends 'layout.html' %}  
+{% block AddToHeader %}
+
+<!-- style to make a table, styles should be always added to the header so should go in header block -->
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 90%;
+  padding: 10px;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+
+{% endblock AddToHeader %}
+
+{% block content %}
+
+<h1 align =' left'> <strong>PL<font color="blue">AI</font>STER  </strong> </h1>
+
+<article>
+    <h3 align =' left'> <strong> About PL<font color="blue">AI</font>STER </strong></h3>
+    <p align =' justify'> <b> How and what does use electricity at home?  </b> Energy management is all about monitoring the electricity consumption of the devices in use. Monitoring the power usage per device can help you track the quality of the device.
+  <div id="more-1" class="fulltext">
+     <p align =' justify'> You can detect how well the device is doing and whether it is consuming the same energy as mentioned on the energy consumption labeling or not. Monitoring energy can even help you to check if the device is degrading and if it is the time to replace it with a new one. Monitoring power consumption of devices is possible by using Crownstones. By extracting the power consumption pattern of different devices we can label which device is being used. With this project, you can track which device is being plugged in and how much power it is using. </p>
+ </div>
+
+    <button aria-expanded="false" aria-controls="more-1" class="toggle-content" hidden><span class="text">Read more</span> <span class="visually-hidden"> </span></button>
+</article>
+
+<!--  the javascript below is to extend the text if the word Read More is pressed-->
+
+<script type="text/javascript">
+  if ('querySelector' in document &&
+  	'addEventListener' in window) {
+
+  	var toggleButtons = document.querySelectorAll('.toggle-content');
+  	var fullTextWrappers = document.querySelectorAll('.fulltext');
+  	var fullText;
+  	var toggleButtonText;
+
+
+  	[].forEach.call(fullTextWrappers, function(fullTextWrapper) {
+  		// hide all full text on load
+  		fullTextWrapper.setAttribute('hidden', true);
+  	});
+
+  	[].forEach.call(toggleButtons, function(toggleButton) {
+  		// show toggle more buttons
+  		toggleButton.removeAttribute('hidden');
+
+  		// add listener for each button
+  		toggleButton.addEventListener('click', function () {
+
+  			fullTextWrapper = this.parentElement.querySelector('.fulltext');
+  			toggleButtonText = this.querySelector('.text');
+
+  			// change attributes and text if full text is shown/hidden
+  			if (!fullTextWrapper.hasAttribute('hidden')) {
+  				toggleButtonText.innerText = 'Read More';
+  				fullTextWrapper.setAttribute('hidden', true);
+  				toggleButton.setAttribute('aria-expanded', false);
+  			} else {
+  				toggleButtonText.innerText = 'Show Less';
+  				fullTextWrapper.removeAttribute('hidden');
+  				toggleButton.setAttribute('aria-expanded', true);
+  			}
+  		});
+  	});
+  }
+</script>
+</br>
+<!-- the table below will show all the devices and there crown id and mac address as saved in the SQLite database of Flask . Devicelist is send from Main/routes.py -->
+<p > <strong> The table below shows all the devices in this project : </strong> </p>
+
+<table>
+  <tr>
+    <th>#</th>
+    <th>Device</th>
+    <th>CrownID</th>
+    <th>MAcAddress</th>
+  </tr>
+
+    {% for ii  in range(0,length)%}
+  <tr>
+    <th>{{ii+1}}</th>
+    <th>{{Devicelist["device_names"][ii]}}</th>
+    <th>{{Devicelist["device_crownids"][ii] }}</th>
+    <th>{{Devicelist["device_macaddress"][ii] }}</th>
+  </tr>
+  {%endfor %}
+
+{% endblock content %}

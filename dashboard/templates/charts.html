@@ -1,0 +1,121 @@
+{% extends 'layout.html' %}
+{% block AddToHeader %}
+<!-- this block for the header is to give the 10 column look to our page.  -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+    box-sizing: border-box;
+}
+
+/* Create two equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 10%;
+  padding: 3px;  /*gives a margin in between columns */
+  /* height: 300px; Should be removed. Only for demonstration */
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive layout - makes the two columns stack on top of each other instead of next to each other    1690px*/
+@media screen and (max-width:1690px) {
+  .column {
+    width: 25%; /* how many can be seen on a small screen. max-width says how much the small sheet can go to start making it 2 columns */
+  }
+}
+@media only screen and (max-width: 1024px) {
+  .column {
+    width: 33%;
+  }
+}
+@media only screen and (max-width: 640px) {
+  .column {
+    width: 50%;
+  }
+}
+@media only screen and (max-width: 340px) {
+  .column {
+    width: 100%;
+  }
+}
+</style>
+{% endblock AddToHeader %}
+
+{% block content %}
+
+  <h1>Power Usage</h1> </br>
+  <div  style="width:600px; font-size:14px; text-align: justify">
+  	<legend class="border-bottom mb-4">{{ legend }} </legend>
+  	<select class="form-control" id="selection"  name="divicechanged" style="background-color:rgb(220,220,220);">
+  		<option>...select Device...</option>
+      <option value="All_devices"> All Devices</option>
+  		{%for all in alldevices%}
+  				<option value="{{all.crownID}}|{{all.macAddress}}"> {{all.name}}</option>  <!-- &nbsp;-&nbsp {{all.crownID}} -->
+  	 {%endfor%}
+  	</select>
+
+
+  </div>
+
+  <!--  add the selected chart here -->
+  <!--  Every time that an item is selected it will add a div that will create a chart for it by using chart-vis.js file-->
+  <div id="graphs_container" class="row" ></div>
+<!-- </div> -->
+
+<script type="text/javascript">
+document.getElementById("selection").onchange = function(){
+		var e = document.getElementById("selection");
+    var selected_index= e.options[e.selectedIndex]
+    var mac_select = e.options[e.selectedIndex].datavalue;
+    var name_select = e.options[e.selectedIndex].text;
+    selected_index.disabled = "disabled" ; // to disable the selection to not have it selected again
+    var value = e.options[e.selectedIndex].value;
+    var exploded_value = value.split('|');
+    var id_select = exploded_value[0];
+    var mac_select = exploded_value[1];
+    if (name_select == "All Devices") {
+
+    }
+    else {
+  		window.crownID =id_select
+		window.macaddress =mac_select
+  		var nospace = (spacedname) => spacedname.replace(/ /g, '_');  // convert all spaced names to names with no space
+  		window.deviceName =nospace(name_select)  // this is a global variable going in to the javascript script
+      window.name_select =name_select
+  		console.log("name is:" ,name_select)
+      // the following model is the entire div look that I want to be appended to the contained div, every time a new item is selected
+      var model = '<div class="column", id ='+id_select+ '></br>' +
+            '<div id=' + nospace(name_select) + 'class=""  style="background-color: pink; text-align: center ;   margin-top:0px; margin-bottom:0px;">' +
+      			'<strong> ' + name_select + '</strong>' +
+            '<input type="button"  value="Rm" onClick="removeElement('+id_select+');" />' +
+            '</div>' +
+            '<div id='+ nospace(name_select)  + ' title=' + nospace(name_select) + '>' +
+            '</div>' +
+        '</div>' +
+        '';
+      $("#graphs_container").append(model);
+      act="go"
+      window.act = act
+  		$.getScript('/static/js/chart-vis.js', function() {
+  		});
+    };
+	};
+</script>
+
+<!-- to remove the div by pressing the button rem the following script will run -->
+<script type="text/javascript">
+  function removeElement(elementID){
+    var element=document.getElementById(elementID);
+    element.parentNode.removeChild(element);
+    act="stop"
+    window.act = act
+    $.getScript('/static/js/chart-vis.js', function() {
+    });
+   }
+</script>
+{% endblock content %}

@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+{% block content %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+<div class="container">
+    <div class="row">
+  <div class="col-md-9">
+  <h2> {{ name}} </h2>
+<p> {{ crownid }} <p> </br>
+
+  <div class="chart" id="chart">
+    <script>
+        var graphs = {{plot | safe}};
+        Plotly.plot('chart',graphs,{});
+    </script>
+    </div>
+</div>
+
+    <div class="col-md-3">
+      <div class="content-section">
+        <h3>Device list</h3>
+        <p class='text-muted'>Select the device
+
+            {% for post in posts %}
+               <ul class="list-group">
+                 <li class="list-group-item list-group-item-light" >
+                <a class="mr-2"  href="{{ url_for ('plots.device_plot',post_id = post.id)}}">  {{ post.name}}</a>
+                </li>
+              </ul>
+            {% endfor %}
+          </ul>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
